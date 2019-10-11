@@ -11,14 +11,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.checkapp.R;
+import com.example.checkapp.data.ApplicationData;
+import com.example.checkapp.data.model.Commute;
+import com.example.checkapp.data.model.Employee;
 import com.example.checkapp.ui.callendar.decorators.EventDecorator;
 import com.example.checkapp.ui.callendar.decorators.OneDayDecorator;
 import com.example.checkapp.ui.callendar.decorators.SaturdayDecorator;
 import com.example.checkapp.ui.callendar.decorators.SundayDecorator;
+import com.example.checkapp.util.ResponseData;
+import com.google.gson.Gson;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,10 +63,51 @@ public class CallendarList extends AppCompatActivity {
                 new SaturdayDecorator(),
                 oneDayDecorator);
 
-        String[] result = {"2017,03,18","2017,04,18","2017,05,18","2017,06,18"};
 
-        new ApiSimulator(result).executeOnExecutor(Executors.newSingleThreadExecutor());
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 데이터 전송 및 리스트 받아오기
+                final Employee employee = ApplicationData.getEmployee();
+                ResponseData responseData = new ResponseData();
+                String emp_id = employee.getEmp_id();
+
+                ArrayList<NameValuePair> postData = new ArrayList<>();
+                postData.add(new BasicNameValuePair("emp_id", emp_id));
+
+                try {
+                    String body = responseData.postResponse("commuteList", postData);
+
+                    Gson gson = new Gson();
+
+                    JSONObject jsonObject = new JSONObject(body);
+                    List<Commute> commuteList = new ArrayList<>();
+
+                    JSONArray commuteListArr = jsonObject.getJSONArray("commuteList");
+                    if (commuteListArr != null) {
+                        Commute commute;
+                        for (int i = 0 ; i < commuteListArr.length(); i++ ) {
+                            Log.d("test", "object : " + commuteListArr.getJSONObject(i));
+                            commute = gson.fromJson(commuteListArr.getJSONObject(i).toString(), Commute.class);
+                            commuteList.add(commute);
+                        }
+                    }
+                    Log.d("test", "commuteList : " + commuteList);
+
+                    new ApiSimulator(commuteList).executeOnExecutor(Executors.newSingleThreadExecutor());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+
+
+
+
+
+        // 캘린더 클릭 이벤트
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
@@ -68,7 +119,7 @@ public class CallendarList extends AppCompatActivity {
                 Log.i("Month test", Month + "");
                 Log.i("Day test", Day + "");
 
-                String shot_Day = Year + "," + Month + "," + Day;
+                String shot_Day = Year + "-" + Month + "-" + Day;
 
                 Log.i("shot_Day test", shot_Day + "");
                 materialCalendarView.clearSelection();
@@ -80,10 +131,10 @@ public class CallendarList extends AppCompatActivity {
 
     private class ApiSimulator extends AsyncTask<Void, Void, List<CalendarDay>> {
 
-        String[] Time_Result;
+        List<Commute> commuteList;
 
-        ApiSimulator(String[] Time_Result){
-            this.Time_Result = Time_Result;
+        ApiSimulator(List<Commute> commuteList){
+            this.commuteList = commuteList;
         }
 
         @Override
@@ -97,21 +148,20 @@ public class CallendarList extends AppCompatActivity {
             Calendar calendar = Calendar.getInstance();
             ArrayList<CalendarDay> dates = new ArrayList<>();
 
+
             /*특정날짜 달력에 점표시해주는곳*/
             /*월은 0이 1월 년,일은 그대로*/
             //string 문자열인 Time_Result 을 받아와서 ,를 기준으로짜르고 string을 int 로 변환
-            for(int i = 0 ; i < Time_Result.length ; i ++){
-                CalendarDay day = CalendarDay.from(calendar);
-                String[] time = Time_Result[i].split(",");
+            for(int i = 0 ; i < commuteList.size() ; i ++){
+                String[] time = commuteList.get(i).getDt().split("-");
                 int year = Integer.parseInt(time[0]);
                 int month = Integer.parseInt(time[1]);
                 int dayy = Integer.parseInt(time[2]);
 
-                dates.add(day);
                 calendar.set(year,month-1,dayy);
+                CalendarDay day = CalendarDay.from(calendar);
+                dates.add(day);
             }
-
-
 
             return dates;
         }
@@ -124,7 +174,7 @@ public class CallendarList extends AppCompatActivity {
                 return;
             }
 
-            materialCalendarView.addDecorator(new EventDecorator(Color.GREEN, calendarDays, CallendarList.this));
+            materialCalendarView.addDecorator(new EventDecorator(Color.RED, calendarDays, CallendarList.this));
         }
     }
 

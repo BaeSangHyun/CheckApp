@@ -1,12 +1,10 @@
 package com.example.checkapp.data.model;
 
-import java.util.Date;
-
 public class Commute {
     private String emp_id;
-    private Date dt;
-    private Date gtw_tm;
-    private Date ow_tm;
+    private String dt;
+    private String gtw_tm;
+    private String ow_tm;
     private String res;
     private String reas;
 
@@ -18,27 +16,27 @@ public class Commute {
         this.emp_id = emp_id;
     }
 
-    public Date getDt() {
+    public String getDt() {
         return dt;
     }
 
-    public void setDt(Date dt) {
+    public void setDt(String dt) {
         this.dt = dt;
     }
 
-    public Date getGtw_tm() {
+    public String getGtw_tm() {
         return gtw_tm;
     }
 
-    public void setGtw_tm(Date gtw_tm) {
+    public void setGtw_tm(String gtw_tm) {
         this.gtw_tm = gtw_tm;
     }
 
-    public Date getOw_tm() {
+    public String getOw_tm() {
         return ow_tm;
     }
 
-    public void setOw_tm(Date ow_tm) {
+    public void setOw_tm(String ow_tm) {
         this.ow_tm = ow_tm;
     }
 
@@ -62,9 +60,9 @@ public class Commute {
     public String toString() {
         return "Commute{" +
                 "emp_id='" + emp_id + '\'' +
-                ", dt=" + dt +
-                ", gtw_tm=" + gtw_tm +
-                ", ow_tm=" + ow_tm +
+                ", dt='" + dt + '\'' +
+                ", gtw_tm='" + gtw_tm + '\'' +
+                ", ow_tm='" + ow_tm + '\'' +
                 ", res='" + res + '\'' +
                 ", reas='" + reas + '\'' +
                 '}';
