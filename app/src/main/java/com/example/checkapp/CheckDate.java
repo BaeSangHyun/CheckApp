@@ -7,6 +7,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.example.checkapp.Handler.BackPressCloseHandler;
 import com.example.checkapp.data.ApplicationData;
 import com.example.checkapp.data.model.Employee;
 import com.example.checkapp.ui.callendar.CallendarList;
@@ -49,6 +50,7 @@ import java.util.ArrayList;
 public class CheckDate extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private AppBarConfiguration mAppBarConfiguration;
+    private BackPressCloseHandler backPressCloseHandler;
     TextView tv;
     Button checkBtn;
     // 위도
@@ -63,6 +65,8 @@ public class CheckDate extends AppCompatActivity implements NavigationView.OnNav
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_date);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        backPressCloseHandler = new BackPressCloseHandler(this);
+
         setSupportActionBar(toolbar);
 //        FloatingActionButton fab = findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -248,7 +252,11 @@ public class CheckDate extends AppCompatActivity implements NavigationView.OnNav
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (ApplicationData.getEmployee() != null) {
+                backPressCloseHandler.onBackPressed();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 }

@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.checkapp.CustomDialog;
+import com.example.checkapp.Handler.BackPressCloseHandler;
 import com.example.checkapp.R;
 import com.example.checkapp.data.ApplicationData;
 import com.example.checkapp.data.model.Employee;
@@ -49,8 +50,8 @@ public class LoginActivity extends AppCompatActivity{
     private LoginViewModel loginViewModel;
     private EditText usernameEditText;
     private EditText passwordEditText;
-
-    Employee employee;
+    private BackPressCloseHandler backPressCloseHandler;
+    private Employee employee;
 
 
     @Override
@@ -73,6 +74,7 @@ public class LoginActivity extends AppCompatActivity{
                 .get(LoginViewModel.class);
 
 
+        backPressCloseHandler = new BackPressCloseHandler(this);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
         final Button loginButton = findViewById(R.id.login);
         usernameEditText = findViewById(R.id.username);
@@ -163,50 +165,6 @@ public class LoginActivity extends AppCompatActivity{
                 Thread th = new Thread(new Runnable() {
                     @Override
                     public void run() {
-//                        String ip = ApplicationData.getIp(); // 자신의 IP주소를 쓰시면 됩니다.(학원)
-//                        String url = "http://" + ip + ":8081/login";
-//
-//                        String id = usernameEditText.getText().toString();
-//                        String pass = passwordEditText.getText().toString();
-//
-//                        try {
-//                            DefaultHttpClient http = new DefaultHttpClient();
-//                            ArrayList<NameValuePair> postData = new ArrayList<>();
-//
-//                            postData.add(new BasicNameValuePair("emp_id", id));
-//                            postData.add(new BasicNameValuePair("pass", pass));
-//
-//                            UrlEncodedFormEntity request = new UrlEncodedFormEntity(postData, "utf-8");
-//                            HttpPost httpPost = new HttpPost(url);
-//
-//                            httpPost.setEntity(request);
-//
-//                            HttpResponse response = http.execute(httpPost);
-//                            String body = EntityUtils.toString(response.getEntity());
-//
-//                            Gson gson = new Gson();
-//
-//                            JSONObject jsonObject = new JSONObject(body);
-//                            String user = jsonObject.getString("user");
-//                            employee = gson.fromJson(user, Employee.class);
-//
-//                            if (employee != null) {
-//                                ApplicationData.setEmployee(employee);
-//                                loadingProgressBar.setVisibility(View.INVISIBLE);
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-////                                        String str = employee.getEmp_nm() + "님 환영합니다";
-////                                        Toast.makeText(getApplicationContext(),str, Toast.LENGTH_LONG);
-//                                        CustomDialog customDialog = new CustomDialog(LoginActivity.this ,R.layout.dialog_fingerprint);
-//                                        customDialog.show();
-//                                    }
-//                                });
-//
-//                            }
-//                        } catch (Exception e) {
-//
-//                        }
                         ResponseData responseData = new ResponseData();
 
                         String id = usernameEditText.getText().toString();
