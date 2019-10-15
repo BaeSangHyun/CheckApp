@@ -6,7 +6,7 @@ import com.example.checkapp.data.model.Employee;
 
 public class ApplicationData extends Application {
     public static Employee employee;
-    public final static String ip = "192.168.0.132";
+    public final static String ip = "3.132.124.81";
 
     public static Employee getEmployee() {
         return employee;

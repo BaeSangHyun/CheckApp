@@ -16,7 +16,7 @@ public class ResponseData {
     String ip = ApplicationData.getIp();
 
     public String postResponse(String mapping, ArrayList<NameValuePair> postData) throws Exception{
-        String url = "http://" + ip + ":8081/" + mapping;
+        String url = "http://" + ip + ":8080/" + mapping;
 
         DefaultHttpClient http = new DefaultHttpClient();
 
@@ -31,17 +31,4 @@ public class ResponseData {
         return body;
     }
 
-//    public String getResponse(String mapping, ArrayList<NameValuePair> postData) throws Exception{
-//        String url = "http://" + ip + ":8081/" + mapping;
-//
-//        DefaultHttpClient http = new DefaultHttpClient();
-//
-//        UrlEncodedFormEntity request = new UrlEncodedFormEntity(postData, "utf-8");
-//        HttpGet httpGet = new HttpGet(url);
-//
-//        HttpResponse response = http.execute(httpGet);
-//        String body = EntityUtils.toString(response.getEntity());
-//
-//        return body;
-//    }
 }
